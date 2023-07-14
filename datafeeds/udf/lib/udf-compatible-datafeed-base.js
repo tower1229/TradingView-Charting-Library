@@ -9,15 +9,15 @@ function extractField(data, field, arrayIndex) {
 }
 /**
  * This class implements interaction with UDF-compatible datafeed.
- * See UDF protocol reference at https://github.com/tradingview/charting_library/wiki/UDF
+ * See [UDF protocol reference](@docs/connecting_data/UDF)
  */
 export class UDFCompatibleDatafeedBase {
-    constructor(datafeedURL, quotesProvider, requester, updateFrequency = 10 * 1000) {
+    constructor(datafeedURL, quotesProvider, requester, updateFrequency = 10 * 1000, limitedServerResponse) {
         this._configuration = defaultConfiguration();
         this._symbolsStorage = null;
         this._datafeedURL = datafeedURL;
         this._requester = requester;
-        this._historyProvider = new HistoryProvider(datafeedURL, this._requester);
+        this._historyProvider = new HistoryProvider(datafeedURL, this._requester, limitedServerResponse);
         this._quotesProvider = quotesProvider;
         this._dataPulseProvider = new DataPulseProvider(this._historyProvider, updateFrequency);
         this._quotesPulseProvider = new QuotesPulseProvider(this._quotesProvider);
@@ -66,6 +66,10 @@ export class UDFCompatibleDatafeedBase {
                         label: extractField(response, 'label', i),
                         labelFontColor: extractField(response, 'labelFontColor', i),
                         minSize: extractField(response, 'minSize', i),
+                        borderWidth: extractField(response, 'borderWidth', i),
+                        hoveredBorderWidth: extractField(response, 'hoveredBorderWidth', i),
+                        imageUrl: extractField(response, 'imageUrl', i),
+                        showLabelWhenImageLoaded: extractField(response, 'showLabelWhenImageLoaded', i),
                     });
                 }
                 response = result;
@@ -98,6 +102,8 @@ export class UDFCompatibleDatafeedBase {
                         color: extractField(response, 'color', i),
                         label: extractField(response, 'label', i),
                         tooltip: extractField(response, 'tooltip', i),
+                        imageUrl: extractField(response, 'imageUrl', i),
+                        showLabelWhenImageLoaded: extractField(response, 'showLabelWhenImageLoaded', i),
                     });
                 }
                 response = result;
@@ -198,7 +204,7 @@ export class UDFCompatibleDatafeedBase {
                         original_unit_id: (_g = response.original_unit_id) !== null && _g !== void 0 ? _g : response['original-unit-id'],
                         unit_conversion_types: (_h = response.unit_conversion_types) !== null && _h !== void 0 ? _h : response['unit-conversion-types'],
                         has_intraday: (_k = (_j = response.has_intraday) !== null && _j !== void 0 ? _j : response['has-intraday']) !== null && _k !== void 0 ? _k : false,
-                        // tslint:disable-next-line: no-deprecation
+                        // eslint-disable-next-line deprecation/deprecation
                         has_no_volume: (_l = response.has_no_volume) !== null && _l !== void 0 ? _l : response['has-no-volume'],
                         visible_plots_set: (_m = response.visible_plots_set) !== null && _m !== void 0 ? _m : response['visible-plots-set'],
                         minmov: (_p = (_o = response.minmovement) !== null && _o !== void 0 ? _o : response.minmov) !== null && _p !== void 0 ? _p : 0,
@@ -235,7 +241,7 @@ export class UDFCompatibleDatafeedBase {
         })
             .catch(onError);
     }
-    subscribeBars(symbolInfo, resolution, onTick, listenerGuid, onResetCacheNeededCallback) {
+    subscribeBars(symbolInfo, resolution, onTick, listenerGuid, _onResetCacheNeededCallback) {
         this._dataPulseProvider.subscribeBars(symbolInfo, resolution, onTick, listenerGuid);
     }
     unsubscribeBars(listenerGuid) {

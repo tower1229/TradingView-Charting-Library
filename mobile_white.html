@@ -2,7 +2,7 @@
 <html>
 	<head>
 
-		<title>TradingView Charting Library demo -- Mobile (white)</title>
+		<title>TradingView Advanced Charts demo -- Mobile (white)</title>
 
 		<!-- Fix for iOS Safari zooming bug -->
 		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
@@ -32,12 +32,17 @@
 					interval: '1D',
 					container: "tv_chart_container",
 					//	BEWARE: no trailing slash is expected in feed URL
-					datafeed: new Datafeeds.UDFCompatibleDatafeed(datafeedUrl),
+					datafeed: new Datafeeds.UDFCompatibleDatafeed(datafeedUrl, undefined, {
+						maxResponseLength: 1000,
+						expectedOrder: 'latestFirst',
+					}),
 					library_path: "charting_library/",
 					locale: "en",
 
-					disabled_features: ["use_localstorage_for_settings"],
-					preset: "mobile"
+					disabled_features: [
+						'use_localstorage_for_settings',
+						'left_toolbar', 'header_widget', 'timeframes_toolbar', 'edit_buttons_in_legend', 'context_menus', 'control_bar', 'border_around_the_chart',
+					]
 				});
 			};
 

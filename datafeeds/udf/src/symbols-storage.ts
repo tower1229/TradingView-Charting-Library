@@ -10,7 +10,7 @@ import {
 	logMessage,
 } from './helpers';
 
-import { Requester } from './requester';
+import { IRequester } from './irequester';
 
 interface SymbolInfoMap {
 	[symbol: string]: LibrarySymbolInfo | undefined;
@@ -99,9 +99,9 @@ export class SymbolsStorage {
 	private readonly _datafeedUrl: string;
 	private readonly _readyPromise: Promise<void>;
 	private readonly _datafeedSupportedResolutions: ResolutionString[];
-	private readonly _requester: Requester;
+	private readonly _requester: IRequester;
 
-	public constructor(datafeedUrl: string, datafeedSupportedResolutions: ResolutionString[], requester: Requester) {
+	public constructor(datafeedUrl: string, datafeedSupportedResolutions: ResolutionString[], requester: IRequester) {
 		this._datafeedUrl = datafeedUrl;
 		this._datafeedSupportedResolutions = datafeedSupportedResolutions;
 		this._requester = requester;

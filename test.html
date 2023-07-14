@@ -2,7 +2,7 @@
 <html>
 	<head>
 
-		<title>TradingView Charting Library demo -- testing mess</title>
+		<title>TradingView Advanced Charts demo -- testing mess</title>
 
 		<!-- Fix for iOS Safari zooming bug -->
 		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
@@ -29,7 +29,10 @@
 				if (customDataUrl !== "") {
 					datafeedUrl = customDataUrl.startsWith('https://') ? customDataUrl : `https://${customDataUrl}`;
 				}
-				var udf_datafeed = new Datafeeds.UDFCompatibleDatafeed(datafeedUrl);
+				var udf_datafeed = new Datafeeds.UDFCompatibleDatafeed(datafeedUrl, undefined, {
+					maxResponseLength: 1000,
+					expectedOrder: 'latestFirst',
+				});
 
 				var widget = window.tvWidget = new TradingView.widget({
 					// debug: true, // uncomment this line to see Library errors and warnings in the console
